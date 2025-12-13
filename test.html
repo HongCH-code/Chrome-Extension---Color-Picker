@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Color Picker 測試頁面</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: Arial, sans-serif;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .color-strip {
+      flex: 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: white;
+      font-size: 24px;
+      font-weight: bold;
+      text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+    }
+
+    .red { background: #ff0000; }
+    .orange { background: #ff8800; }
+    .yellow { background: #ffff00; color: #333; text-shadow: none; }
+    .green { background: #00ff00; color: #333; text-shadow: none; }
+    .blue { background: #0088ff; }
+    .purple { background: #8800ff; }
+    .pink { background: #ff00ff; }
+
+    .instructions {
+      position: fixed;
+      top: 20px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: rgba(0, 0, 0, 0.8);
+      color: white;
+      padding: 20px 30px;
+      border-radius: 10px;
+      text-align: center;
+      z-index: 1000;
+      max-width: 500px;
+    }
+
+    .instructions h2 {
+      margin-bottom: 10px;
+    }
+
+    .instructions p {
+      margin: 5px 0;
+      font-size: 14px;
+    }
+
+    .gradient-box {
+      position: fixed;
+      bottom: 20px;
+      left: 20px;
+      width: 200px;
+      height: 200px;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      border-radius: 10px;
+      box-shadow: 0 8px 16px rgba(0, 0, 0, 0.3);
+    }
+  </style>
+</head>
+<body>
+  <div class="instructions">
+    <h2>🎨 Color Picker 測試頁面</h2>
+    <p>1. 點擊擴充套件圖標</p>
+    <p>2. 點擊 "PICK COLOR" 按鈕</p>
+    <p>3. 移動滑鼠到不同顏色區域</p>
+    <p>4. 點擊選取顏色</p>
+    <p>5. 重新打開 popup 查看結果</p>
+  </div>
+
+  <div class="color-strip red">紅色 #FF0000</div>
+  <div class="color-strip orange">橙色 #FF8800</div>
+  <div class="color-strip yellow">黃色 #FFFF00</div>
+  <div class="color-strip green">綠色 #00FF00</div>
+  <div class="color-strip blue">藍色 #0088FF</div>
+  <div class="color-strip purple">紫色 #8800FF</div>
+  <div class="color-strip pink">粉紅 #FF00FF</div>
+
+  <div class="gradient-box"></div>
+</body>
+</html>

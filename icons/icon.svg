@@ -1,0 +1,23 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128" width="128" height="128">
+  <!-- 背景 -->
+  <rect width="128" height="128" rx="24" fill="#1e293b"/>
+
+  <!-- 色板圖標 -->
+  <g transform="translate(24, 24)">
+    <!-- 調色板 -->
+    <circle cx="40" cy="40" r="35" fill="none" stroke="#3b82f6" stroke-width="6"/>
+
+    <!-- 顏色點 -->
+    <circle cx="40" cy="15" r="5" fill="#ef4444"/>
+    <circle cx="58" cy="22" r="5" fill="#f59e0b"/>
+    <circle cx="65" cy="40" r="5" fill="#10b981"/>
+    <circle cx="22" cy="22" r="5" fill="#8b5cf6"/>
+    <circle cx="15" cy="40" r="5" fill="#3b82f6"/>
+
+    <!-- 畫筆 -->
+    <g transform="translate(45, 45)">
+      <rect x="0" y="0" width="8" height="25" rx="2" fill="#94a3b8" transform="rotate(45 4 12.5)"/>
+      <circle cx="4" cy="4" r="6" fill="#f1f5f9"/>
+    </g>
+  </g>
+</svg>

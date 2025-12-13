@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>生成擴充套件圖標</title>
+  <style>
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      max-width: 800px;
+      margin: 50px auto;
+      padding: 20px;
+      background: #f5f5f5;
+    }
+    h1 {
+      color: #333;
+    }
+    .container {
+      background: white;
+      padding: 30px;
+      border-radius: 12px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    }
+    .icon-preview {
+      display: flex;
+      gap: 30px;
+      margin: 30px 0;
+      align-items: center;
+    }
+    .icon-box {
+      text-align: center;
+    }
+    canvas {
+      border: 1px solid #ddd;
+      border-radius: 8px;
+      margin: 10px 0;
+    }
+    button {
+      background: #3b82f6;
+      color: white;
+      border: none;
+      padding: 10px 20px;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 14px;
+      margin-top: 10px;
+    }
+    button:hover {
+      background: #2563eb;
+    }
+    .instructions {
+      background: #f0f9ff;
+      border-left: 4px solid #3b82f6;
+      padding: 15px;
+      margin: 20px 0;
+      border-radius: 4px;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>生成 Color Picker 圖標</h1>
+
+    <div class="instructions">
+      <strong>使用說明：</strong>
+      <ol>
+        <li>點擊下方的「下載」按鈕，保存每個尺寸的圖標</li>
+        <li>將下載的圖標文件放到 icons 資料夾中</li>
+        <li>確保檔名正確：icon16.png, icon48.png, icon128.png</li>
+      </ol>
+    </div>
+
+    <div class="icon-preview">
+      <div class="icon-box">
+        <h3>16x16</h3>
+        <canvas id="canvas16" width="16" height="16"></canvas>
+        <br>
+        <button onclick="downloadIcon(16)">下載 icon16.png</button>
+      </div>
+
+      <div class="icon-box">
+        <h3>48x48</h3>
+        <canvas id="canvas48" width="48" height="48"></canvas>
+        <br>
+        <button onclick="downloadIcon(48)">下載 icon48.png</button>
+      </div>
+
+      <div class="icon-box">
+        <h3>128x128</h3>
+        <canvas id="canvas128" width="128" height="128"></canvas>
+        <br>
+        <button onclick="downloadIcon(128)">下載 icon128.png</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // 繪製圖標
+    function drawIcon(canvas, size) {
+      const ctx = canvas.getContext('2d');
+      const scale = size / 128;
+
+      // 清空畫布
+      ctx.clearRect(0, 0, size, size);
+
+      // 背景
+      ctx.fillStyle = '#1e293b';
+      roundRect(ctx, 0, 0, size, size, size * 0.19);
+      ctx.fill();
+
+      ctx.save();
+      ctx.scale(scale, scale);
+      ctx.translate(24, 24);
+
+      // 調色板圓環
+      ctx.strokeStyle = '#3b82f6';
+      ctx.lineWidth = 6;
+      ctx.beginPath();
+      ctx.arc(40, 40, 35, 0, Math.PI * 2);
+      ctx.stroke();
+
+      // 顏色點
+      const colors = [
+        { x: 40, y: 15, color: '#ef4444' },
+        { x: 58, y: 22, color: '#f59e0b' },
+        { x: 65, y: 40, color: '#10b981' },
+        { x: 22, y: 22, color: '#8b5cf6' },
+        { x: 15, y: 40, color: '#3b82f6' }
+      ];
+
+      colors.forEach(({ x, y, color }) => {
+        ctx.fillStyle = color;
+        ctx.beginPath();
+        ctx.arc(x, y, 5, 0, Math.PI * 2);
+        ctx.fill();
+      });
+
+      // 畫筆
+      ctx.translate(45, 45);
+      ctx.save();
+      ctx.rotate(Math.PI / 4);
+      ctx.fillStyle = '#94a3b8';
+      roundRect(ctx, -4, -4, 8, 25, 2);
+      ctx.fill();
+      ctx.restore();
+
+      ctx.fillStyle = '#f1f5f9';
+      ctx.beginPath();
+      ctx.arc(4, 4, 6, 0, Math.PI * 2);
+      ctx.fill();
+
+      ctx.restore();
+    }
+
+    // 圓角矩形
+    function roundRect(ctx, x, y, width, height, radius) {
+      ctx.beginPath();
+      ctx.moveTo(x + radius, y);
+      ctx.lineTo(x + width - radius, y);
+      ctx.quadraticCurveTo(x + width, y, x + width, y + radius);
+      ctx.lineTo(x + width, y + height - radius);
+      ctx.quadraticCurveTo(x + width, y + height, x + width - radius, y + height);
+      ctx.lineTo(x + radius, y + height);
+      ctx.quadraticCurveTo(x, y + height, x, y + height - radius);
+      ctx.lineTo(x, y + radius);
+      ctx.quadraticCurveTo(x, y, x + radius, y);
+      ctx.closePath();
+    }
+
+    // 下載圖標
+    function downloadIcon(size) {
+      const canvas = document.getElementById(`canvas${size}`);
+      const link = document.createElement('a');
+      link.download = `icon${size}.png`;
+      link.href = canvas.toDataURL('image/png');
+      link.click();
+    }
+
+    // 初始化
+    window.onload = () => {
+      drawIcon(document.getElementById('canvas16'), 16);
+      drawIcon(document.getElementById('canvas48'), 48);
+      drawIcon(document.getElementById('canvas128'), 128);
+    };
+  </script>
+</body>
+</html>

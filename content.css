@@ -1,0 +1,14 @@
+/* Color Picker Content Styles */
+/* 這個文件用於網頁取色時的樣式 */
+
+#color-picker-overlay {
+  /* 覆蓋層樣式在 content.js 中定義 */
+}
+
+#color-picker-magnifier {
+  /* 放大鏡樣式在 content.js 中定義 */
+}
+
+#color-picker-info {
+  /* 顏色資訊樣式在 content.js 中定義 */
+}
