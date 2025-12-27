@@ -21,6 +21,9 @@ const monochromaticBtn = document.getElementById('monochromaticBtn');
 const complementaryBtn = document.getElementById('complementaryBtn');
 const paletteDisplay = document.getElementById('paletteDisplay');
 const copyBtns = document.querySelectorAll('.copy-btn');
+const historyDisplay = document.getElementById('historyDisplay');
+const historyCount = document.getElementById('historyCount');
+const MAX_HISTORY_ITEMS = 20;
 
 // HSL 轉 RGB
 function hslToRgb(h, s, l) {
@@ -271,6 +274,9 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
 
       // 保存到 storage
       chrome.storage.local.set({ lastPickedColor: request.color });
+
+      // 添加到歷史記錄
+      addColorToHistory(request.color);
     }
   }
 });
@@ -288,6 +294,129 @@ chrome.storage.local.get(['lastPickedColor'], (result) => {
     }
   }
 });
+
+// 歷史記錄功能
+
+// 載入並渲染歷史記錄
+function loadColorHistory() {
+  chrome.storage.local.get(['colorHistory', 'lastPickedColor'], (result) => {
+    let history = result.colorHistory || [];
+
+    // 遷移：如果歷史為空但有 lastPickedColor，則初始化歷史
+    if (history.length === 0 && result.lastPickedColor) {
+      history = [{ hex: result.lastPickedColor, timestamp: Date.now() }];
+      chrome.storage.local.set({ colorHistory: history });
+    }
+
+    renderHistory(history);
+  });
+}
+
+// 渲染歷史記錄到 DOM
+function renderHistory(history) {
+  historyDisplay.innerHTML = '';
+
+  // 更新計數
+  historyCount.textContent = `(${history.length})`;
+
+  // 顯示空狀態
+  if (history.length === 0) {
+    const emptyState = document.createElement('div');
+    emptyState.className = 'history-empty';
+    emptyState.innerHTML = `
+      <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+        <circle cx="12" cy="12" r="10"/>
+        <path d="M12 6v6l4 2"/>
+      </svg>
+      <p>No color history yet</p>
+      <span>Pick colors to start building your history</span>
+    `;
+    historyDisplay.appendChild(emptyState);
+    return;
+  }
+
+  // 渲染每個歷史項目
+  history.forEach((colorItem) => {
+    const item = document.createElement('div');
+    item.className = 'history-item';
+    item.dataset.color = colorItem.hex;
+
+    const preview = document.createElement('div');
+    preview.className = 'history-color-preview';
+    preview.style.backgroundColor = colorItem.hex;
+
+    const value = document.createElement('span');
+    value.className = 'history-color-value';
+    value.textContent = colorItem.hex;
+
+    item.appendChild(preview);
+    item.appendChild(value);
+
+    // 點擊處理：載入顏色到選擇器
+    item.addEventListener('click', () => {
+      loadColorFromHistory(colorItem.hex);
+    });
+
+    historyDisplay.appendChild(item);
+  });
+}
+
+// 添加顏色到歷史記錄
+function addColorToHistory(hexColor) {
+  // 標準化 HEX（大寫，帶 #）
+  let normalizedHex = hexColor.toUpperCase();
+  if (!normalizedHex.startsWith('#')) {
+    normalizedHex = '#' + normalizedHex;
+  }
+
+  chrome.storage.local.get(['colorHistory'], (result) => {
+    let history = result.colorHistory || [];
+
+    // 移除重複（不區分大小寫）
+    history = history.filter(item =>
+      item.hex.toUpperCase() !== normalizedHex
+    );
+
+    // 添加到最前面（最新）
+    history.unshift({
+      hex: normalizedHex,
+      timestamp: Date.now()
+    });
+
+    // 限制為 20 條
+    if (history.length > MAX_HISTORY_ITEMS) {
+      history = history.slice(0, MAX_HISTORY_ITEMS);
+    }
+
+    // 保存到 storage
+    chrome.storage.local.set({ colorHistory: history }, () => {
+      renderHistory(history);
+    });
+  });
+}
+
+// 從歷史記錄載入顏色
+function loadColorFromHistory(hexColor) {
+  const rgb = hexToRgb(hexColor);
+  if (rgb) {
+    const hsl = rgbToHsl(rgb.r, rgb.g, rgb.b);
+    currentColor = hsl;
+    hueSlider.value = hsl.h;
+    updateColorDisplay();
+    updateSLIndicatorPosition();
+
+    // 視覺反饋
+    const items = document.querySelectorAll('.history-item');
+    items.forEach(item => {
+      if (item.dataset.color === hexColor) {
+        item.style.transform = 'scale(1.1)';
+        setTimeout(() => {
+          item.style.transform = '';
+        }, 200);
+      }
+    });
+  }
+}
 
 // 生成單色調色板
 function generateMonochromaticPalette() {
@@ -351,6 +480,10 @@ function displayPalette(colors) {
 
     colorDiv.addEventListener('click', async () => {
       await navigator.clipboard.writeText(color);
+
+      // 添加到歷史記錄
+      addColorToHistory(color);
+
       colorDiv.style.transform = 'scale(1.1)';
       setTimeout(() => {
         colorDiv.style.transform = 'scale(1)';
@@ -382,10 +515,20 @@ function init() {
   updateColorDisplay();
   updateSLIndicatorPosition();
 
+  // 載入歷史記錄
+  loadColorHistory();
+
   // 預設顯示當前顏色
   const rgb = hslToRgb(currentColor.h, currentColor.s, currentColor.l);
   const hex = rgbToHex(rgb.r, rgb.g, rgb.b);
   displayPalette([hex]);
 }
+
+// 監聽 storage 變化以同步多個 popup 實例
+chrome.storage.onChanged.addListener((changes, namespace) => {
+  if (namespace === 'local' && changes.colorHistory) {
+    renderHistory(changes.colorHistory.newValue || []);
+  }
+});
 
 init();

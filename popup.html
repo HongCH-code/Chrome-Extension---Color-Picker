@@ -109,6 +109,31 @@
       </div>
     </div>
 
+    <!-- 顏色歷史記錄 -->
+    <div class="history-section" id="historySection">
+      <div class="section-title">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/>
+          <path d="M3 3v5h5"/>
+          <path d="M12 7v5l4 2"/>
+        </svg>
+        Color History
+        <span class="history-count" id="historyCount">(0)</span>
+      </div>
+
+      <div class="history-display" id="historyDisplay">
+        <!-- 空狀態提示 -->
+        <div class="history-empty" id="historyEmpty">
+          <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+            <circle cx="12" cy="12" r="10"/>
+            <path d="M12 6v6l4 2"/>
+          </svg>
+          <p>No color history yet</p>
+          <span>Pick colors to start building your history</span>
+        </div>
+      </div>
+    </div>
+
     <!-- 調色板生成 -->
     <div class="palette-section">
       <div class="section-title">

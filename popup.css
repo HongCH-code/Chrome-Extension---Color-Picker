@@ -395,3 +395,123 @@ input[type="number"]::-webkit-outer-spin-button {
 input[type="number"] {
   -moz-appearance: textfield;
 }
+
+/* 歷史記錄區塊 */
+.history-section {
+  background: #0f172a;
+  border-radius: 16px;
+  padding: 20px;
+  margin-bottom: 16px;
+}
+
+.history-count {
+  font-size: 14px;
+  color: #94a3b8;
+  font-weight: 400;
+  margin-left: 4px;
+}
+
+.history-display {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 10px;
+  max-height: 200px;
+  overflow-y: auto;
+  padding: 2px;
+}
+
+/* 歷史記錄自定義滾動條 */
+.history-display::-webkit-scrollbar {
+  width: 6px;
+}
+
+.history-display::-webkit-scrollbar-track {
+  background: #1e293b;
+  border-radius: 3px;
+}
+
+.history-display::-webkit-scrollbar-thumb {
+  background: #475569;
+  border-radius: 3px;
+}
+
+.history-display::-webkit-scrollbar-thumb:hover {
+  background: #64748b;
+}
+
+.history-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  padding: 8px;
+  background: #1e293b;
+  border-radius: 10px;
+  cursor: pointer;
+  transition: all 0.2s;
+  border: 2px solid transparent;
+}
+
+.history-item:hover {
+  background: #334155;
+  transform: translateY(-2px);
+  border-color: #3b82f6;
+  box-shadow: 0 4px 8px rgba(59, 130, 246, 0.2);
+}
+
+.history-item:active {
+  transform: translateY(0);
+}
+
+.history-color-preview {
+  width: 100%;
+  aspect-ratio: 1;
+  border-radius: 8px;
+  border: 2px solid #334155;
+  transition: border-color 0.2s;
+}
+
+.history-item:hover .history-color-preview {
+  border-color: #3b82f6;
+}
+
+.history-color-value {
+  font-size: 11px;
+  font-weight: 600;
+  color: #e2e8f0;
+  font-family: 'Courier New', monospace;
+  letter-spacing: -0.5px;
+}
+
+/* 空狀態 */
+.history-empty {
+  grid-column: 1 / -1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 30px 20px;
+  color: #64748b;
+  text-align: center;
+}
+
+.history-empty svg {
+  opacity: 0.3;
+  margin-bottom: 12px;
+}
+
+.history-empty p {
+  font-size: 15px;
+  font-weight: 600;
+  color: #94a3b8;
+  margin-bottom: 4px;
+}
+
+.history-empty span {
+  font-size: 13px;
+  color: #64748b;
+}
+
+.history-display.has-items .history-empty {
+  display: none;
+}
